@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "784663459448",
+    "firebase_url": "https://myarnetmaung-223bb.firebaseio.com",
+    "project_id": "myarnetmaung-223bb",
+    "storage_bucket": "myarnetmaung-223bb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:784663459448:android:84233269281276b7a35f8d",
+        "android_client_info": {
+          "package_name": "lwinmoehein.io.myarnetmaung"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "784663459448-qbt60nqj994l9vh4vqds2oia8i27cc5i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "lwinmoehein.io.myarnetmaung",
+            "certificate_hash": "1c4bf4b7332cbff60f5338d81a789ff312b3cfc0"
+          }
+        },
+        {
+          "client_id": "784663459448-optjrgmn852r387or4lbg5e1s4vbhu84.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC20O2CjCi_VfFHNWyxBNypEuv2_49y2XI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "784663459448-optjrgmn852r387or4lbg5e1s4vbhu84.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -12,11 +12,14 @@ import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.sql.Ref;
 import java.util.Arrays;
 import java.util.List;
 
 import lwinmoehein.io.myarnetmaung.MainActivity;
 import lwinmoehein.io.myarnetmaung.R;
+import lwinmoehein.io.myarnetmaung.Singleton.References;
+import lwinmoehein.io.myarnetmaung.model.Lover;
 
 import static lwinmoehein.io.myarnetmaung.Singleton.Codes.RC_SIGN_IN;
 
@@ -63,6 +66,7 @@ public class LoginActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                createNewUser(user);
                 Intent intent=new Intent(LoginActivity.this,MainActivity.class);
                 startActivity(intent);
                 finish();
@@ -74,6 +78,10 @@ public class LoginActivity extends AppCompatActivity {
                 // ...
             }
         }
+    }
+
+    private void createNewUser(FirebaseUser user) {
+        References.loverDatabaseRef.child(user.getUid()).setValue(new Lover(user.getUid(),user.getDisplayName(),user.getPhotoUrl().toString(),null,null,null));
     }
 
     public void showLoginForm(View view) {

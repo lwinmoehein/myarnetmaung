@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="Home" android:icon="@drawable/ic_home_black_24dp"></item>
+    <item android:title="Chat" android:icon="@drawable/ic_chat_bubble_outline_black_24dp"></item>
+    <item android:title="Memories" android:icon="@drawable/ic_import_export_black_24dp"></item>
+    <item android:title="Private" android:icon="@drawable/ic_chat_bubble_outline_black_24dp"></item>
+
+</menu>

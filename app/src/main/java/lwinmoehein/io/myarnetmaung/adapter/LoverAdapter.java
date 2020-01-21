@@ -6,17 +6,23 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
+import java.sql.Ref;
 import java.util.ArrayList;
 import java.util.List;
 
 import lwinmoehein.io.myarnetmaung.R;
 import lwinmoehein.io.myarnetmaung.Singleton.CurrentUser;
+import lwinmoehein.io.myarnetmaung.Singleton.References;
 import lwinmoehein.io.myarnetmaung.model.Lover;
 
 public class LoverAdapter extends RecyclerView.Adapter<LoverAdapter.LoverViewHolder>{
@@ -64,7 +70,7 @@ public class LoverAdapter extends RecyclerView.Adapter<LoverAdapter.LoverViewHol
 
     static class LoverViewHolder extends RecyclerView.ViewHolder {
         private TextView txtLoverName,txtLoverStatus;
-        private Button btnDeleteRelationship;
+        private Button btnConfirmRelationship;
         private ImageView imgLoverProfile;
 
         public LoverViewHolder(View view) {
@@ -73,28 +79,51 @@ public class LoverAdapter extends RecyclerView.Adapter<LoverAdapter.LoverViewHol
            this.txtLoverStatus=view.findViewById(R.id.lover_status);
            this.imgLoverProfile=view.findViewById(R.id.lover_profile);
 
-           this.btnDeleteRelationship=view.findViewById(R.id.lover_delete_relationship);
+           this.btnConfirmRelationship=view.findViewById(R.id.lover_confirm_relationship);
 
-           this.btnDeleteRelationship.setOnClickListener(new View.OnClickListener() {
-               @Override
-               public void onClick(View v) {
 
-               }
-           });
 
 
         }
 
         public void bindPostUi(Lover lover, LoverAdapter adapter, List<Lover> lovers){
             this.txtLoverName.setText(lover.getName());
-            if(lover.getRsid().equals("")){
-                this.txtLoverStatus.setText("Single");
-            }else{
-                this.txtLoverStatus.setText("Has Relationship");
+            if(!(lover.getRsid()==null)) {
+                if (lover.getRsid().equals("")) {
+                    this.txtLoverStatus.setText("Single");
+                } else {
+                    this.txtLoverStatus.setText("Has Relationship");
+                }
             }
 
             Glide.with(this.txtLoverName.getContext()).load(lover.getProfilepic()).placeholder(R.drawable.img_error).into(this.imgLoverProfile);
+            this.btnConfirmRelationship.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String rsid= References.rsDatabaseRef.push().getKey();
+                    lover.setRsid(rsid);
+                    References.pendingloverDb.child(CurrentUser.currentUser.getUid()).setValue(null);
 
+                    References.loverDatabaseRef.child(lover.getUid()).setValue(lover);
+                    References.loverDatabaseRef.child(CurrentUser.currentUser.getUid()).child("rsid").setValue(rsid);
+
+                    References.loverDatabaseRef.child(CurrentUser.currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            Lover lover1=dataSnapshot.getValue(Lover.class);
+                            References.rsDatabaseRef.child(rsid).child(lover.getUid()).setValue(lover1);
+                            References.rsDatabaseRef.child(CurrentUser.currentUser.getUid()).setValue(lover);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+
+                }
+            });
 
         }
     }

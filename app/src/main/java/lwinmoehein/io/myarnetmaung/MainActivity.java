@@ -3,6 +3,7 @@ package lwinmoehein.io.myarnetmaung;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -35,6 +36,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import de.mateware.snacky.Snacky;
+import lwinmoehein.io.myarnetmaung.dialog.RelationShipDialog;
 import lwinmoehein.io.myarnetmaung.fragment.FragmentHome;
 import lwinmoehein.io.myarnetmaung.fragment.FragmentProfile;
 
@@ -59,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         logo=(ImageView)findViewById(R.id.img_logo);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -116,4 +118,7 @@ public class MainActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
         }
-    }}
+    }
+
+
+}

@@ -10,7 +10,7 @@
         android:background="#FFFFBB33"
         android:contentDescription="@string/app_name" />
     <EditText
-        android:id="@+id/username"
+        android:id="@+id/edt_lover_id"
         android:inputType="textEmailAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

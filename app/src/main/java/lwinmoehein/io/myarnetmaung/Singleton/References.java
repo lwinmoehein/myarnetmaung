@@ -7,6 +7,7 @@ import com.google.firebase.storage.StorageReference;
 
 public class References {
     public static DatabaseReference loverDatabaseRef= FirebaseDatabase.getInstance().getReference("lovers");
+    public static DatabaseReference pendingloverDb= FirebaseDatabase.getInstance().getReference("pendinglovers");
     public static StorageReference  loverStorageRef= FirebaseStorage.getInstance().getReference("lovers");
 
     public static DatabaseReference chatDatabaseRef= FirebaseDatabase.getInstance().getReference("chats");

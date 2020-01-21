@@ -50,16 +50,30 @@
                     android:text="Single" />
 
                 <Button
-                    android:id="@+id/user_add_relationship"
+                    android:id="@+id/btnUserLogout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Add Relationship" />
+                    android:text="LogOut" />
 
-                <Button
-                    android:id="@+id/btn_user_copy_id"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Copy Id" />
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/user_add_relationship"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Add Relationship" />
+
+                    <Button
+                        android:id="@+id/btn_user_copy_id"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Copy Id" />
+
+                </LinearLayout>
+
             </LinearLayout>
 
         </LinearLayout>

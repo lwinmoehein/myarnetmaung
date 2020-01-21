@@ -2,15 +2,41 @@ package lwinmoehein.io.myarnetmaung.dialog;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+
+import java.lang.reflect.Type;
+import java.time.Duration;
+
+import de.mateware.snacky.Snacky;
+import lwinmoehein.io.myarnetmaung.MainActivity;
 import lwinmoehein.io.myarnetmaung.R;
+import lwinmoehein.io.myarnetmaung.Singleton.CurrentUser;
+import lwinmoehein.io.myarnetmaung.Singleton.References;
+import lwinmoehein.io.myarnetmaung.model.Lover;
 
 public class RelationShipDialog extends DialogFragment {
+    View parentView;
+    public RelationShipDialog(View view){
+        this.parentView=view;
+    }
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -25,11 +51,84 @@ public class RelationShipDialog extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         // sign in the user ...
+                        EditText editText = (EditText) ((AlertDialog) dialog).findViewById(R.id.edt_lover_id);
+                        String strLoverId=editText.getText().toString();
+                        if(strLoverId.equals("")){
+                            Snacky.builder().setView(parentView)
+                                    .setText("Pelase fill the id")
+                                    .setDuration(Snacky.LENGTH_LONG)
+                                    .build().setBackgroundTint(Color.RED)
+                                    .show();
+                        }else if(strLoverId.equals(CurrentUser.currentUser.getUid())){
+                            Snacky.builder().setView(parentView)
+                                    .setText("You can't love yourself!!")
+                                    .setDuration(Snacky.LENGTH_LONG)
+                                    .build().setBackgroundTint(Color.RED)
+                                    .show();
+                        }
+
+                        else {
+                            References.loverDatabaseRef.child(strLoverId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists()) {
+                                       //get current user inifo
+                                        References.loverDatabaseRef.child(CurrentUser.currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                Lover lover=dataSnapshot.getValue(Lover.class);
+                                                //insert to pending lovers
+                                                References.pendingloverDb.child(strLoverId).child(lover.getUid()).setValue(lover)
+                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void aVoid) {
+                                                                Snacky.builder().setView(parentView)
+                                                                        .setText("Ask your lover to confirm this request")
+                                                                        .setDuration(Snacky.LENGTH_LONG)
+                                                                        .build().setBackgroundTint(Color.GREEN)
+                                                                        .show();
+                                                            }
+                                                        }).addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Snacky.builder().setView(parentView)
+                                                                .setText("Something wrong sending lover request")
+                                                                .setDuration(Snacky.LENGTH_LONG)
+                                                                .build().setBackgroundTint(Color.RED)
+                                                                .show();
+                                                    }
+                                                });
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            }
+                                        });
+
+
+                                    } else {
+                                        Snacky.builder().setView(parentView)
+                                                .setText("No one found with this id")
+                                                .setDuration(Snacky.LENGTH_LONG)
+                                                .build().setBackgroundTint(Color.RED)
+                                                .show();
+
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
                     }
                 })
                 .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         RelationShipDialog.this.getDialog().cancel();
+
                     }
                 });
         return builder.create();

@@ -6,15 +6,15 @@ public class Lover
     String name;
     String profilepic;
     String gender;
-    String loverid;
+    Lover lover;
     String rsid;
 
-    public Lover(String uid, String name, String profilepic, String gender, String loverid, String rsid) {
+    public Lover(String uid, String name, String profilepic, String gender, Lover lover, String rsid) {
         this.uid = uid;
         this.name = name;
         this.profilepic = profilepic;
         this.gender = gender;
-        this.loverid = loverid;
+        this.lover = lover;
         this.rsid = rsid;
     }
     public Lover(){}
@@ -51,12 +51,12 @@ public class Lover
         this.gender = gender;
     }
 
-    public String getLoverid() {
-        return loverid;
+    public Lover getLover() {
+        return lover;
     }
 
-    public void setLoverid(String loverid) {
-        this.loverid = loverid;
+    public void setLover(Lover lover) {
+        this.lover = lover;
     }
 
     public String getRsid() {

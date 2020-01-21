@@ -1,5 +1,8 @@
 package lwinmoehein.io.myarnetmaung.fragment;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +37,7 @@ public class FragmentProfile extends Fragment {
     ImageView imgUserProfile;
     TextView txtUserName,txtUserStatus;
 
-    Button addRelationship;
+    Button addRelationship,copyId;
 
     RecyclerView recyclerLovers;
     LoverAdapter loverAdapter;
@@ -55,6 +58,7 @@ public class FragmentProfile extends Fragment {
         txtUserStatus=view.findViewById(R.id.user_status);
 
         addRelationship=view.findViewById(R.id.user_add_relationship);
+        copyId=view.findViewById(R.id.btn_user_copy_id);
         recyclerLovers=view.findViewById(R.id.recycler_lovers);
 
         loverAdapter=new LoverAdapter(lovers);
@@ -70,6 +74,15 @@ public class FragmentProfile extends Fragment {
             public void onClick(View v) {
                 RelationShipDialog relationShipDialog=new RelationShipDialog();
                 relationShipDialog.show(getFragmentManager(),"Add");
+            }
+        });
+        copyId.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ClipboardManager clipboard = (ClipboardManager)getActivity(). getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("id", CurrentUser.currentUser.getUid());
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(getActivity(),"Id copied",Toast.LENGTH_LONG).show();
             }
         });
 

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,12 +19,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ui.idp.SingleSignInActivity;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -33,6 +40,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.File;
 import java.security.acl.LastOwnerException;
 import java.util.ArrayList;
+import java.util.List;
 
 import de.mateware.snacky.Snacky;
 import lwinmoehein.io.myarnetmaung.MainActivity;
@@ -50,10 +58,11 @@ public class FragmentProfile extends Fragment {
 
     Button addRelationship,copyId,logoutUser;
 
-    RecyclerView recyclerLovers;
-    LoverAdapter loverAdapter;
-    ArrayList<Lover> lovers=new ArrayList<>();
-    ArrayList<String> pendingloverids=new ArrayList<>();
+
+
+    ViewPager pagerLovers;
+    TabLayout tabLover;
+
     public FragmentProfile(){
 
     }
@@ -65,6 +74,13 @@ public class FragmentProfile extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        tabLover=view.findViewById(R.id.tab_lovers);
+        pagerLovers=view.findViewById(R.id.pager_lovers);
+
+        setupViewPager(pagerLovers);
+        tabLover.setupWithViewPager(pagerLovers);
+
+
         imgUserProfile=view.findViewById(R.id.user_profile);
         txtUserName=view.findViewById(R.id.user_name);
         txtUserStatus=view.findViewById(R.id.user_status);
@@ -72,11 +88,7 @@ public class FragmentProfile extends Fragment {
         addRelationship=view.findViewById(R.id.user_add_relationship);
         copyId=view.findViewById(R.id.btn_user_copy_id);
         logoutUser=view.findViewById(R.id.btnUserLogout);
-        recyclerLovers=view.findViewById(R.id.recycler_lovers);
 
-        loverAdapter=new LoverAdapter(lovers);
-        recyclerLovers.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerLovers.setAdapter(loverAdapter);
 
 
 
@@ -117,42 +129,44 @@ public class FragmentProfile extends Fragment {
             }
         });
 
-        References.pendingloverDb.child(CurrentUser.currentUser.getUid()).addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                if(dataSnapshot.exists()) {
-                    Lover lover=dataSnapshot.getValue(Lover.class);
-                    lovers.add(lover);
-                    loverAdapter.notifyDataSetChanged();
-                    pendingloverids.add(lover.getUid());
-                }
-            }
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                Lover lover=dataSnapshot.getValue(Lover.class);
-                int index=lovers.indexOf(lover.getUid());
-                lovers.remove(index);
-                loverAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
 
     }
 
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager());
+        adapter.addFragment(new PendingLoversFragment(), "pending lovers");
+        adapter.addFragment(new SendLoversFragment(), "sent lovers");
+        viewPager.setAdapter(adapter);
+    }
+
+    class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
+    }
 
 }

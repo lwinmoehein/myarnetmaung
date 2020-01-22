@@ -1,5 +1,6 @@
 package lwinmoehein.io.myarnetmaung.acitivity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -11,6 +12,9 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import java.sql.Ref;
 import java.util.Arrays;
@@ -82,7 +86,20 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void createNewUser(FirebaseUser user) {
-        References.loverDatabaseRef.child(user.getUid()).setValue(new Lover(user.getUid(),user.getDisplayName(),user.getPhotoUrl().toString(),null,null,null));
+        References.loverDatabaseRef.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!(dataSnapshot.exists())){
+                    References.loverDatabaseRef.child(user.getUid()).setValue(new Lover(user.getUid(),user.getDisplayName(),user.getPhotoUrl().toString(),null,null,null));
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public void showLoginForm(View view) {

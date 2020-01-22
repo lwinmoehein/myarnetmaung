@@ -129,6 +129,23 @@ public class FragmentProfile extends Fragment {
             }
         });
 
+        References.loverDatabaseRef.child(CurrentUser.currentUser.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Lover currentlover=dataSnapshot.getValue(Lover.class);
+                if(currentlover.getRsid()==null){
+                    txtUserStatus.setText("Single");
+                }else{
+                    txtUserStatus.setText("Relationship");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
 
 
     }

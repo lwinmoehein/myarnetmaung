@@ -21,11 +21,12 @@ import lwinmoehein.io.myarnetmaung.R;
 import lwinmoehein.io.myarnetmaung.Singleton.CurrentUser;
 import lwinmoehein.io.myarnetmaung.Singleton.References;
 import lwinmoehein.io.myarnetmaung.adapter.LoverAdapter;
+import lwinmoehein.io.myarnetmaung.adapter.SendLoverAdapter;
 import lwinmoehein.io.myarnetmaung.model.Lover;
 
 public class SendLoversFragment  extends Fragment {
     RecyclerView recyclerLovers;
-    LoverAdapter loverAdapter;
+    SendLoverAdapter loverAdapter;
     ArrayList<Lover> lovers=new ArrayList<>();
     ArrayList<String> pendingloverids=new ArrayList<>();
     @Nullable
@@ -39,7 +40,7 @@ public class SendLoversFragment  extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         recyclerLovers=view.findViewById(R.id.recycler_sentlovers);
 
-        loverAdapter=new LoverAdapter(lovers);
+        loverAdapter=new SendLoverAdapter(lovers);
         recyclerLovers.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerLovers.setAdapter(loverAdapter);
 

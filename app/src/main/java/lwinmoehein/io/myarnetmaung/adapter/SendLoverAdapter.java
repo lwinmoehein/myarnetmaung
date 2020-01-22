@@ -1,12 +1,12 @@
 package lwinmoehein.io.myarnetmaung.adapter;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,21 +16,21 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
-import java.sql.Ref;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.mateware.snacky.Snacky;
 import lwinmoehein.io.myarnetmaung.R;
 import lwinmoehein.io.myarnetmaung.Singleton.CurrentUser;
 import lwinmoehein.io.myarnetmaung.Singleton.References;
 import lwinmoehein.io.myarnetmaung.model.Lover;
 
-public class LoverAdapter extends RecyclerView.Adapter<LoverAdapter.LoverViewHolder>{
+public class SendLoverAdapter extends RecyclerView.Adapter<SendLoverAdapter.RelationshipViewHolder>{
 
     private List<Lover> loverArrayList=new ArrayList<>();
     ;
 
-    public LoverAdapter(List<Lover> postArrayList) {
+    public SendLoverAdapter(List<Lover> postArrayList) {
         this.loverArrayList = postArrayList;
         this.setHasStableIds(true);
 
@@ -46,14 +46,14 @@ public class LoverAdapter extends RecyclerView.Adapter<LoverAdapter.LoverViewHol
         return position;
     }
     @NonNull
-    @Override public LoverViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    @Override public RelationshipViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view= LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.item_lover, viewGroup, false);
-        LoverViewHolder loverViewHolder=new LoverViewHolder(view);
+                .inflate(R.layout.sent_lover_item, viewGroup, false);
+        RelationshipViewHolder loverViewHolder=new RelationshipViewHolder(view);
         return loverViewHolder;
     }
 
-    @Override public void onBindViewHolder(@NonNull LoverViewHolder loverViewHolder, int i) {
+    @Override public void onBindViewHolder(@NonNull RelationshipViewHolder loverViewHolder, int i) {
         Lover post=loverArrayList.get(i);
         loverViewHolder.bindPostUi(post,this,loverArrayList);
     }
@@ -68,60 +68,44 @@ public class LoverAdapter extends RecyclerView.Adapter<LoverAdapter.LoverViewHol
     }
 
 
-    static class LoverViewHolder extends RecyclerView.ViewHolder {
+    static class RelationshipViewHolder extends RecyclerView.ViewHolder {
         private TextView txtLoverName,txtLoverStatus;
         private Button btnConfirmRelationship;
         private ImageView imgLoverProfile;
 
-        public LoverViewHolder(View view) {
+        public RelationshipViewHolder(View view) {
             super(view);
            this.txtLoverName=view.findViewById(R.id.lover_name);
            this.txtLoverStatus=view.findViewById(R.id.lover_status);
            this.imgLoverProfile=view.findViewById(R.id.lover_profile);
 
-           this.btnConfirmRelationship=view.findViewById(R.id.lover_confirm_relationship);
+           this.btnConfirmRelationship=view.findViewById(R.id.lover_cancel_relationship);
 
 
 
 
         }
 
-        public void bindPostUi(Lover lover, LoverAdapter adapter, List<Lover> lovers){
+        public void bindPostUi(Lover lover, SendLoverAdapter adapter, List<Lover> lovers){
             this.txtLoverName.setText(lover.getName());
             if(lover.getRsid()==null){
                 this.txtLoverStatus.setText("Single");
-            }else{
-                this.txtLoverStatus.setText("Relationship");
+            }else {
+                this.txtLoverStatus.setText("In a relationship");
+
             }
 
             Glide.with(this.txtLoverName.getContext()).load(lover.getProfilepic()).placeholder(R.drawable.img_error).into(this.imgLoverProfile);
             this.btnConfirmRelationship.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String rsid= References.rsDatabaseRef.push().getKey();
-                   References.pendingloverDb.child(CurrentUser.currentUser.getUid()).setValue(null);
-
-                    References.loverDatabaseRef.child(CurrentUser.currentUser.getUid()).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            Lover lover1=dataSnapshot.getValue(Lover.class);
-                            References.rsDatabaseRef.child(rsid).child(lover.getUid()).setValue(lover1);
-                            References.rsDatabaseRef.child(rsid).child(CurrentUser.currentUser.getUid()).setValue(lover);
-
-                            References.loverDatabaseRef.child(CurrentUser.currentUser.getUid()).child("rsid").setValue(rsid);
-                            References.loverDatabaseRef.child(lover.getUid()).child("rsid").setValue(rsid);
-                            References.sentLovers.child(lover.getUid()).child("rsid").setValue(rsid);
-
-
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-
+                   References.pendingloverDb.child(lover.getUid()).setValue(null);
+                   References.sentLovers.child(CurrentUser.currentUser.getUid()).setValue(null);
+                    Snacky.builder().setView(v.getRootView())
+                            .setText("Cancled request")
+                            .setDuration(Snacky.LENGTH_LONG)
+                            .build().setBackgroundTint(Color.GREEN)
+                            .show();
 
                 }
             });

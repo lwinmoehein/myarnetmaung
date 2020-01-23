@@ -75,64 +75,74 @@ public class RelationShipDialog extends DialogFragment {
                                     if (dataSnapshot.exists()) {
                                        //get current user inifo
                                         Lover otherlover=dataSnapshot.getValue(Lover.class);
-                                        References.pendingloverDb.child(CurrentUser.currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                if(dataSnapshot.exists()){
-                                                    Snacky.builder().setView(parentView)
-                                                            .setText("This acc already sent you a request,please click confirm!!")
-                                                            .setDuration(Snacky.LENGTH_LONG)
-                                                            .build().setBackgroundTint(Color.RED)
-                                                            .show();
-                                                }else{
-                                                    References.loverDatabaseRef.child(CurrentUser.currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                                                        @Override
-                                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                            Lover lover=dataSnapshot.getValue(Lover.class);
-                                                            //insert to pending lovers
-                                                            References.pendingloverDb.child(strLoverId).child(lover.getUid()).setValue(lover)
-                                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                        @Override
-                                                                        public void onSuccess(Void aVoid) {
-                                                                            References.sentLovers.child(CurrentUser.currentUser.getUid()).child(otherlover.getUid()).setValue(otherlover).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                @Override
-                                                                                public void onSuccess(Void aVoid) {
-                                                                                    Snacky.builder().setView(parentView)
-                                                                                            .setText("Ask your lover to confirm this request")
-                                                                                            .setDuration(Snacky.LENGTH_LONG)
-                                                                                            .build().setBackgroundTint(Color.GREEN)
-                                                                                            .show();
-                                                                                }
-                                                                            });
+                                        if(!(otherlover.getRsid()==null)){
+                                            Snacky.builder().setView(parentView)
+                                                    .setText("already in a relationship")
+                                                    .setDuration(Snacky.LENGTH_LONG)
+                                                    .build().setBackgroundTint(Color.RED)
+                                                    .show();
 
-                                                                        }
-                                                                    }).addOnFailureListener(new OnFailureListener() {
-                                                                @Override
-                                                                public void onFailure(@NonNull Exception e) {
-                                                                    Snacky.builder().setView(parentView)
-                                                                            .setText("Something wrong sending lover request")
-                                                                            .setDuration(Snacky.LENGTH_LONG)
-                                                                            .build().setBackgroundTint(Color.RED)
-                                                                            .show();
-                                                                }
-                                                            });
-                                                        }
+                                        }else {
 
-                                                        @Override
-                                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                                            References.pendingloverDb.child(CurrentUser.currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                    if (dataSnapshot.exists()) {
+                                                        Snacky.builder().setView(parentView)
+                                                                .setText("This acc already sent you a request,please click confirm!!")
+                                                                .setDuration(Snacky.LENGTH_LONG)
+                                                                .build().setBackgroundTint(Color.RED)
+                                                                .show();
+                                                    } else {
+                                                        References.loverDatabaseRef.child(CurrentUser.currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                                Lover lover = dataSnapshot.getValue(Lover.class);
+                                                                //insert to pending lovers
 
-                                                        }
-                                                    });
+                                                                References.pendingloverDb.child(strLoverId).child(lover.getUid()).setValue(lover)
+                                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                            @Override
+                                                                            public void onSuccess(Void aVoid) {
+                                                                                References.sentLovers.child(CurrentUser.currentUser.getUid()).child(otherlover.getUid()).setValue(otherlover).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                    @Override
+                                                                                    public void onSuccess(Void aVoid) {
+                                                                                        Snacky.builder().setView(parentView)
+                                                                                                .setText("Ask your lover to confirm this request")
+                                                                                                .setDuration(Snacky.LENGTH_LONG)
+                                                                                                .build().setBackgroundTint(Color.GREEN)
+                                                                                                .show();
+                                                                                    }
+                                                                                });
+
+                                                                            }
+                                                                        }).addOnFailureListener(new OnFailureListener() {
+                                                                    @Override
+                                                                    public void onFailure(@NonNull Exception e) {
+                                                                        Snacky.builder().setView(parentView)
+                                                                                .setText("Something wrong sending lover request")
+                                                                                .setDuration(Snacky.LENGTH_LONG)
+                                                                                .build().setBackgroundTint(Color.RED)
+                                                                                .show();
+                                                                    }
+                                                                });
+                                                            }
+
+                                                            @Override
+                                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                            }
+                                                        });
+                                                    }
                                                 }
-                                            }
 
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                            }
-                                        });
+                                                }
+                                            });
 
-
+                                        }
 
                                     } else {
                                         Snacky.builder().setView(parentView)

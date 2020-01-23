@@ -107,10 +107,12 @@ public class LoverAdapter extends RecyclerView.Adapter<LoverAdapter.LoverViewHol
                             Lover lover1=dataSnapshot.getValue(Lover.class);
                             References.rsDatabaseRef.child(rsid).child(lover.getUid()).setValue(lover1);
                             References.rsDatabaseRef.child(rsid).child(CurrentUser.currentUser.getUid()).setValue(lover);
+                            References.rsDatabaseRef.child(rsid).child(CurrentUser.currentUser.getUid()).child("rsid").setValue(rsid);
 
                             References.loverDatabaseRef.child(CurrentUser.currentUser.getUid()).child("rsid").setValue(rsid);
                             References.loverDatabaseRef.child(lover.getUid()).child("rsid").setValue(rsid);
-                            References.sentLovers.child(lover.getUid()).child("rsid").setValue(rsid);
+
+                            References.sentLovers.child(lover.getUid()).child(CurrentUser.currentUser.getUid()).setValue(null);
 
 
 

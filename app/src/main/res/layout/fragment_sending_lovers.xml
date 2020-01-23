@@ -2,6 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="You requested to this people"
+        android:textColor="#FF9800" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_sentlovers"
         android:layout_width="match_parent"

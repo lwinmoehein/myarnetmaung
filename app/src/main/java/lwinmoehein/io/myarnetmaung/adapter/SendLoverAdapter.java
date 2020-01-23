@@ -91,7 +91,26 @@ public class SendLoverAdapter extends RecyclerView.Adapter<SendLoverAdapter.Rela
             if(lover.getRsid()==null){
                 this.txtLoverStatus.setText("Single");
             }else {
-                this.txtLoverStatus.setText("In a relationship");
+                References.rsDatabaseRef.child(lover.getRsid()).child(lover.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists()) {
+                            Lover lover1 = dataSnapshot.getValue(Lover.class);
+                            if (lover1.getUid().equals(CurrentUser.currentUser.getUid())) {
+                                txtLoverStatus.setText("You are in love with " + lover.getName());
+                                btnConfirmRelationship.setVisibility(View.GONE);
+                            } else {
+                                txtLoverStatus.setText("Oops,someone has taken your heart");
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
 
             }
 

@@ -11,12 +11,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -53,15 +55,18 @@ import lwinmoehein.io.myarnetmaung.dialog.RelationShipDialog;
 import lwinmoehein.io.myarnetmaung.model.Lover;
 
 public class FragmentProfile extends Fragment {
-    ImageView imgUserProfile;
-    TextView txtUserName,txtUserStatus;
+    ImageView imgUserProfile,partnerProfile;
+    TextView txtUserName,txtUserStatus,txtPartnerStatus,txtPartnerName;
 
-    Button addRelationship,copyId,logoutUser;
+    Button addRelationship,copyId,logoutUser,btnEndRelationship;
 
-
+    LinearLayout cardPartner,bottomLayout;
 
     ViewPager pagerLovers;
     TabLayout tabLover;
+
+    String rsId;
+    String loverid;
 
     public FragmentProfile(){
 
@@ -82,12 +87,19 @@ public class FragmentProfile extends Fragment {
 
 
         imgUserProfile=view.findViewById(R.id.user_profile);
+        partnerProfile=view.findViewById(R.id.partner_profile);
+        txtPartnerStatus=view.findViewById(R.id.partner_status);
+        txtPartnerName=view.findViewById(R.id.partner_name);
+        btnEndRelationship=view.findViewById(R.id.btnEndRelationship);
+        cardPartner=view.findViewById(R.id.card_partner);
+
         txtUserName=view.findViewById(R.id.user_name);
         txtUserStatus=view.findViewById(R.id.user_status);
 
         addRelationship=view.findViewById(R.id.user_add_relationship);
         copyId=view.findViewById(R.id.btn_user_copy_id);
         logoutUser=view.findViewById(R.id.btnUserLogout);
+        bottomLayout=view.findViewById(R.id.bottom_layout);
 
 
 
@@ -129,14 +141,48 @@ public class FragmentProfile extends Fragment {
             }
         });
 
+        btnEndRelationship.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                   References.rsDatabaseRef.child(rsId).setValue(null);
+                   References.loverDatabaseRef.child(loverid).child("rsid").setValue(null);
+                   References.loverDatabaseRef.child(CurrentUser.currentUser.getUid()).child("rsid").setValue(null);
+
+            }
+        });
+
         References.loverDatabaseRef.child(CurrentUser.currentUser.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Lover currentlover=dataSnapshot.getValue(Lover.class);
                 if(currentlover.getRsid()==null){
                     txtUserStatus.setText("Single");
+                    bottomLayout.setVisibility(View.VISIBLE);
+                    cardPartner.setVisibility(View.GONE);
                 }else{
+                    rsId=currentlover.getRsid();
                     txtUserStatus.setText("Relationship");
+                    bottomLayout.setVisibility(View.GONE);
+                    References.rsDatabaseRef.child(currentlover.getRsid()).child(currentlover.getUid()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.exists()) {
+                                Lover partner = dataSnapshot.getValue(Lover.class);
+                                txtPartnerName.setText(partner.getName());
+                                loverid=partner.getUid();
+                                Glide.with(getContext()).load(partner.getProfilepic()).placeholder(R.drawable.img_error).into(partnerProfile);
+                                txtPartnerStatus.setText(partner.getRsid());
+                                cardPartner.setVisibility(View.VISIBLE);
+                            }
+
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                 }
             }
 

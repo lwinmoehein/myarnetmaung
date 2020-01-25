@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,6 +62,8 @@ public class FragmentHome extends Fragment implements View.OnClickListener, Date
     int anniday,annimonth,anniyear;
     String rsid="";
 
+    LinearLayout noanni;
+
 
 
 
@@ -86,6 +89,8 @@ public class FragmentHome extends Fragment implements View.OnClickListener, Date
 
         textViewCurrentDay=view.findViewById(R.id.textViewCurrentDay);
 
+        noanni=view.findViewById(R.id.no_anni);
+
 
 
 
@@ -109,11 +114,16 @@ public class FragmentHome extends Fragment implements View.OnClickListener, Date
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     AnniDate anniDate = dataSnapshot.getValue(AnniDate.class);
-                                    editTextBirthDay.setText(addZero(anniDate.getDay()));
-                                    editTextBirthMonth.setText(addZero(anniDate.getMonth()));
-                                    editTextBirthYear.setText(String.valueOf(anniDate.getYear()));
-                                    calculateAge();
-                                    nextBirthday();
+                                    if(anniDate!=null) {
+                                        editTextBirthDay.setText(addZero(anniDate.getDay()));
+                                        editTextBirthMonth.setText(addZero(anniDate.getMonth()));
+                                        editTextBirthYear.setText(String.valueOf(anniDate.getYear()));
+                                        calculateAge();
+                                        nextBirthday();
+                                        noanni.setVisibility(View.GONE);
+                                    }else {
+                                        noanni.setVisibility(View.VISIBLE);
+                                    }
                                 }
 
                                 @Override

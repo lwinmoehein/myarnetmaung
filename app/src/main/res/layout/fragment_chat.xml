@@ -5,12 +5,16 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:layout_width="match_parent"
+            android:id="@+id/no_chat_refresh"
+            android:layout_height="match_parent">
     <RelativeLayout
         android:id="@+id/no_lover_found"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
-
         <LinearLayout
             android:id="@+id/grav"
             android:layout_width="wrap_content"
@@ -34,6 +38,7 @@
         </LinearLayout>
 
     </RelativeLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/refresh_chat"
         android:layout_width="match_parent"

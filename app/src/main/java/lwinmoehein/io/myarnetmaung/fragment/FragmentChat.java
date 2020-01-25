@@ -66,7 +66,7 @@ public class FragmentChat extends HomeBaseFragment {
     //send message
     private ImageView imageBtn,sendBtn;
     private EditText edtMessage;
-    private SwipeRefreshLayout refreshChat;
+    private SwipeRefreshLayout refreshChat,noRefreshchat;
     RelativeLayout noLover;
     private int REQUEST_CODE_CHOOSE=1119;
 
@@ -74,6 +74,8 @@ public class FragmentChat extends HomeBaseFragment {
     private int itempos=0;
     private String lastitem="";
     private boolean moreItem=true;
+
+
 
 
     public FragmentChat() {
@@ -102,21 +104,25 @@ public class FragmentChat extends HomeBaseFragment {
         noLover=view.findViewById(R.id.no_lover_found);
 
         refreshChat=view.findViewById(R.id.refresh_chat);
+        noRefreshchat=view.findViewById(R.id.no_chat_refresh);
         messageAdapter=new MessageAdapter(chatMessages);
         recyclermessages.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclermessages.setAdapter(messageAdapter);
 
-
-        References.loverDatabaseRef.child(CurrentUser.currentUser.getUid()).addValueEventListener(new ValueEventListener() {
+        References.loverDatabaseRef.child(CurrentUser.currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
                     if((dataSnapshot.getValue(Lover.class).getRsid()!=null)){
-                        loadData();
-                        noLover.setVisibility(View.GONE);
+                        chatReference=chatReference.child(dataSnapshot.getValue(Lover.class).getRsid());
+                        getData();
+                        noRefreshchat.setVisibility(View.GONE);
+
+                        noRefreshchat.setEnabled(false);
 
                     }else {
-                        noLover.setVisibility(View.VISIBLE);
+                        noRefreshchat.setVisibility(View.VISIBLE);
+                        noRefreshchat.setEnabled(true);
                     }
                 }
             }
@@ -124,6 +130,36 @@ public class FragmentChat extends HomeBaseFragment {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
+            }
+        });
+
+        noRefreshchat.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                References.loverDatabaseRef.child(CurrentUser.currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists()){
+                            noRefreshchat.setRefreshing(false);
+                            if((dataSnapshot.getValue(Lover.class).getRsid()!=null)){
+                                chatReference=chatReference.child(dataSnapshot.getValue(Lover.class).getRsid());
+                                //getData();
+                                noRefreshchat.setVisibility(View.GONE);
+                                noRefreshchat.setEnabled(false);
+
+                            }else {
+                                noRefreshchat.setVisibility(View.VISIBLE);
+                                noRefreshchat.setEnabled(true);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
         });
 
@@ -168,7 +204,6 @@ public class FragmentChat extends HomeBaseFragment {
             @Override
             public void onRefresh() {
                itempos=0;
-               loadMoreData();
             }
         });
 
@@ -222,21 +257,15 @@ public class FragmentChat extends HomeBaseFragment {
 
 
 //load more
-private void loadData(){
-Log.i("loa","loading");
-    DatabaseReference database= chatReference;
-    ChildEventListener childEventListener=new ChildEventListener() {
+private void getData(){
+
+      chatReference.addChildEventListener(new ChildEventListener() {
         @Override
         public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
             ChatMessage mg=dataSnapshot.getValue(ChatMessage.class);
             if(!chatIds.contains(dataSnapshot.getKey())) {
                 chatMessages.add(mg);
                 chatIds.add(dataSnapshot.getKey());
-                itempos++;
-                if (itempos == 1) {
-                    lastitem = dataSnapshot.getKey();
-                }
-
                 messageAdapter.notifyItemInserted(chatMessages.size() - 1);
                 refreshChat.setRefreshing(false);
                 recyclermessages.scrollToPosition(chatMessages.size() - 1);
@@ -266,83 +295,13 @@ Log.i("loa","loading");
         public void onCancelled(@NonNull DatabaseError databaseError) {
 
         }
-    };
-    Query query=database.orderByKey().limitToLast(ITEM_COUNT);
-    query.addChildEventListener(childEventListener);
+    });
+
 }
 
 
 //load more data
 //To load more chat data From cloud firebase
-private void loadMoreData() {
-    DatabaseReference database = chatReference;
-    ChildEventListener childEventListener = new ChildEventListener() {
-        @Override
-        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            if(!chatIds.contains(dataSnapshot.getKey())) {
-                if (chatIds.indexOf(dataSnapshot.getKey()) == -1) {
-                    if (lastitem.equals(dataSnapshot.getKey())) {
-                        moreItem = false;
-                        lastitem = "";
-                        messageAdapter.notifyDataSetChanged();
-                        refreshChat.setRefreshing(false);
-                    } else {
-                        ChatMessage mg = dataSnapshot.getValue(ChatMessage.class);
-                        chatIds.add(itempos, dataSnapshot.getKey());
-                        chatMessages.add(itempos++, mg);
-                        moreItem = false;
-                        if (itempos == 1) {
-                            lastitem = dataSnapshot.getKey();
-                        }
-                        messageAdapter.notifyDataSetChanged();
-                        refreshChat.setRefreshing(false);
-                    }
-                }
-                if (!moreItem) {
-                    refreshChat.setRefreshing(false);
-                }
-            }
-
-
-        }
-        @Override
-        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-
-
-        }
-
-        @Override
-        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-
-
-        }
-
-        @Override
-        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-        }
-    };
-
-    Query query=database.orderByKey().endAt(lastitem).limitToLast(ITEM_COUNT);
-    query.addChildEventListener(childEventListener);
-    if(moreItem){
-        Handler handler=new Handler();
-        Runnable r=new Runnable() {
-            @Override
-            public void run() {
-                refreshChat.setRefreshing(false);
-            }
-        };
-        handler.postDelayed(r,2000);
-    }
-}
 
 
 }

@@ -41,18 +41,20 @@
                         android:layout_height="wrap_content"
                         android:text="Today's Date"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:textColor="#45c3ff" />
+                        android:textColor="#45c3ff"
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/textViewCurrentDay"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
                         android:layout_alignParentEnd="true"
-                        android:layout_marginBottom="1dp"
+                        android:layout_alignParentBottom="true"
                         android:layout_marginEnd="3dp"
+                        android:layout_marginBottom="1dp"
                         android:textColor="#aaffffff"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:visibility="gone" />
                 </RelativeLayout>
 
                 <FrameLayout
@@ -64,7 +66,7 @@
                         android:id="@+id/lldate1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                    >
+                        android:visibility="gone">
 
                         <EditText
                             android:id="@+id/editTextCurrentDay"
@@ -134,7 +136,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
                         android:contentDescription="Calender"
-                        android:src="@drawable/ic_launcher_foreground" />
+                        android:src="@drawable/ic_launcher_foreground"
+                        android:visibility="gone" />
                 </FrameLayout>
 
                 <RelativeLayout
@@ -146,7 +149,7 @@
                         android:id="@+id/TextView02"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Date Of Birth"
+                        android:text="Anniday"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         android:textColor="#45c3ff" />
                 </RelativeLayout>
@@ -243,37 +246,12 @@
                     android:layout_marginTop="20dp"
                     android:background="#23b17e">
 
-                    <TextView
-                        android:id="@+id/textViewCalculate"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1.0"
-
-                        android:gravity="center"
-                        android:paddingBottom="7dp"
-                        android:paddingTop="7dp"
-                        android:text="Calculate"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:textColor="#ffffff" />
-
                     <View
                         android:id="@+id/view1"
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
                         android:background="#aaffffff" />
 
-                    <TextView
-                        android:id="@+id/textViewClear"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1.0"
-
-                        android:gravity="center"
-                        android:paddingBottom="7dp"
-                        android:paddingTop="7dp"
-                        android:text="Clear"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:textColor="#ffffff" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -295,7 +273,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="1dp"
-                            android:text="Age"
+                            android:text="Anniversary Count"
                             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                             android:textColor="#00ffbb" />
 
@@ -409,7 +387,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="1dp"
-                            android:text="Next Birthday"
+                            android:text="Upcoming anniversary"
                             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                             android:textColor="#00ffbb" />
 

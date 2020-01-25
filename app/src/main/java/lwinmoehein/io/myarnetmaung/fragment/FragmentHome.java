@@ -18,6 +18,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.text.SimpleDateFormat;
@@ -27,6 +31,10 @@ import java.util.Date;
 import es.dmoral.toasty.Toasty;
 import lwinmoehein.io.myarnetmaung.MainActivity;
 import lwinmoehein.io.myarnetmaung.R;
+import lwinmoehein.io.myarnetmaung.Singleton.CurrentUser;
+import lwinmoehein.io.myarnetmaung.Singleton.References;
+import lwinmoehein.io.myarnetmaung.model.AnniDate;
+import lwinmoehein.io.myarnetmaung.model.Lover;
 
 public class FragmentHome extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
 
@@ -49,6 +57,9 @@ public class FragmentHome extends Fragment implements View.OnClickListener, Date
     EditText editTextCurrentDay;
     EditText editTextCurrentMonth;
     EditText editTextCurrentYear;
+
+    int anniday,annimonth,anniyear;
+    String rsid="";
 
 
 
@@ -74,18 +85,54 @@ public class FragmentHome extends Fragment implements View.OnClickListener, Date
         textViewFinalYears=view.findViewById(R.id.textViewFinalYears);
 
         textViewCurrentDay=view.findViewById(R.id.textViewCurrentDay);
-        textViewCalculate=view.findViewById(R.id.textViewCalculate);
-        textViewClear=view.findViewById(R.id.textViewClear);
+
 
 
 
         //end initialize
         setupCurrentDate(); // setup today's date
 
-        textViewCalculate.setOnClickListener(this);
-        textViewClear.setOnClickListener(this);
+
         imageViewCalenderSecond.setOnClickListener(this);
         imageViewCalenderFirst.setOnClickListener(this);
+
+
+        References.loverDatabaseRef.child(CurrentUser.currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    Lover lover=dataSnapshot.getValue(Lover.class);
+                    if(lover.getRsid()!=null){
+                        rsid=lover.getRsid();
+                        if(!(rsid.equals(""))) {
+                            References.anniDate.child(rsid).addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    AnniDate anniDate = dataSnapshot.getValue(AnniDate.class);
+                                    editTextBirthDay.setText(addZero(anniDate.getDay()));
+                                    editTextBirthMonth.setText(addZero(anniDate.getMonth()));
+                                    editTextBirthYear.setText(String.valueOf(anniDate.getYear()));
+                                    calculateAge();
+                                    nextBirthday();
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
 
     @Nullable
@@ -108,6 +155,8 @@ public class FragmentHome extends Fragment implements View.OnClickListener, Date
         String dayOfWeek = simpledateformat.format(date);
         textViewCurrentDay.setText(dayOfWeek);
         textViewCurrentDay.setVisibility(View.VISIBLE);
+
+
     }
 
     private String addZero(int number) {
@@ -136,6 +185,8 @@ public class FragmentHome extends Fragment implements View.OnClickListener, Date
                     now.get(Calendar.MONTH), // Initial month selection
                     now.get(Calendar.DAY_OF_MONTH) // Inital day selection
             );
+            dpd.show(getFragmentManager(), "Datepickerdialog");
+
         } else if (view == textViewCalculate) {
             if (!TextUtils.isEmpty(editTextBirthDay.getText()) && !TextUtils.isEmpty(editTextBirthMonth.getText()) && !TextUtils.isEmpty(editTextBirthYear.getText())) {
                 calculateAge();
@@ -227,8 +278,12 @@ public class FragmentHome extends Fragment implements View.OnClickListener, Date
 
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-        editTextBirthDay.setText(addZero(dayOfMonth));
-        editTextBirthMonth.setText(addZero(monthOfYear + 1));
-        editTextBirthYear.setText(String.valueOf(year));
+        References.anniDate.child(rsid).setValue(new AnniDate(dayOfMonth,Integer.parseInt(addZero(monthOfYear+1)),year)).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                calculateAge();
+                nextBirthday();
+            }
+        });
     }
 }

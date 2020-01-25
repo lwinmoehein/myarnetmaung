@@ -23,6 +23,8 @@ public class References {
 
     public static DatabaseReference mDb= FirebaseDatabase.getInstance().getReference();
 
+    public static DatabaseReference anniDate=FirebaseDatabase.getInstance().getReference("anniversaries");
+
 
 
 

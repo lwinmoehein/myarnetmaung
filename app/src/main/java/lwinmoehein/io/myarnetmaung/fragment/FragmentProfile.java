@@ -34,11 +34,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import de.mateware.snacky.Snacky;
+import lwinmoehein.io.myarnetmaung.MainActivity;
 import lwinmoehein.io.myarnetmaung.R;
 import lwinmoehein.io.myarnetmaung.Singleton.CurrentUser;
 import lwinmoehein.io.myarnetmaung.Singleton.References;
@@ -46,11 +49,11 @@ import lwinmoehein.io.myarnetmaung.acitivity.GoogleSignInActivity;
 import lwinmoehein.io.myarnetmaung.dialog.RelationShipDialog;
 import lwinmoehein.io.myarnetmaung.model.Lover;
 
-public class FragmentProfile extends Fragment {
+public class FragmentProfile extends Fragment implements DatePickerDialog.OnDateSetListener {
     ImageView imgUserProfile,partnerProfile;
     TextView txtUserName,txtUserStatus,txtPartnerStatus,txtPartnerName;
 
-    Button addRelationship,copyId,logoutUser,btnEndRelationship;
+    Button editDate,logoutUser,btnEndRelationship;
 
     LinearLayout cardPartner,bottomLayout;
 
@@ -90,8 +93,9 @@ public class FragmentProfile extends Fragment {
         txtUserName=view.findViewById(R.id.user_name);
         txtUserStatus=view.findViewById(R.id.user_status);
 
-        addRelationship=view.findViewById(R.id.user_add_relationship);
-        copyId=view.findViewById(R.id.btn_user_copy_id);
+        editDate=view.findViewById(R.id.btn_edit_date);
+
+
         logoutUser=view.findViewById(R.id.btnUserLogout);
         bottomLayout=view.findViewById(R.id.bottom_layout);
 
@@ -101,7 +105,7 @@ public class FragmentProfile extends Fragment {
         txtUserName.setText(CurrentUser.currentUser.getDisplayName());
         Glide.with(getContext()).load(CurrentUser.currentUser.getPhotoUrl()).placeholder(R.drawable.img_error).into(imgUserProfile);
 
-        addRelationship.setOnClickListener(new View.OnClickListener() {
+       /* addRelationship.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 RelationShipDialog relationShipDialog=new RelationShipDialog(v.getRootView());
@@ -117,7 +121,7 @@ public class FragmentProfile extends Fragment {
                 Toast.makeText(getActivity(),"Id copied",Toast.LENGTH_LONG).show();
             }
         });
-
+*/
         logoutUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -140,6 +144,21 @@ public class FragmentProfile extends Fragment {
                    References.loverDatabaseRef.child(loverid).child("rsid").setValue(null);
                    References.loverDatabaseRef.child(CurrentUser.currentUser.getUid()).child("rsid").setValue(null);
 
+            }
+        });
+
+        editDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar now = Calendar.getInstance();
+                DatePickerDialog dpd = DatePickerDialog.newInstance(
+                        FragmentProfile.this,
+                        now.get(Calendar.YEAR), // Initial year selection
+                        now.get(Calendar.MONTH), // Initial month selection
+                        now.get(Calendar.DAY_OF_MONTH) // Inital day selection
+                );
+// If you're calling this from a support Fragment
+                dpd.show(getFragmentManager(), "Datepickerdialog");
             }
         });
 
@@ -197,6 +216,13 @@ public class FragmentProfile extends Fragment {
         adapter.addFragment(new PendingLoversFragment(), "pending lovers");
         adapter.addFragment(new SendLoversFragment(), "sent lovers");
         viewPager.setAdapter(adapter);
+    }
+
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        String date = dayOfMonth+"/"+(monthOfYear+1)+"/"+year;
+        Toast.makeText(getActivity(),date,Toast.LENGTH_LONG).show();
+
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {

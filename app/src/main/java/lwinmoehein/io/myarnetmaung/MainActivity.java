@@ -78,8 +78,8 @@ public class MainActivity extends AppCompatActivity {
         //set tab icons
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_home_black_24dp);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_chat_bubble_outline_black_24dp);
-        tabLayout.getTabAt(2).setIcon(R.drawable.ic_import_export_black_24dp);
-        tabLayout.getTabAt(3).setIcon(R.drawable.ic_chat_bubble_outline_black_24dp);
+        tabLayout.getTabAt(2).setIcon(R.drawable.ic_users);
+        tabLayout.getTabAt(3).setIcon(R.drawable.ic_edit_profile);
         //
     }
 

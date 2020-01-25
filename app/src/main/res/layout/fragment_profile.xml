@@ -62,16 +62,11 @@
                     android:orientation="horizontal">
 
                     <Button
-                        android:id="@+id/user_add_relationship"
+                        android:id="@+id/btn_edit_date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="add" />
-
-                    <Button
-                        android:id="@+id/btn_user_copy_id"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Copy Id" />
+                        android:layout_weight="1"
+                        android:text="editdate" />
 
                     <Button
                         android:id="@+id/btnEndRelationship"

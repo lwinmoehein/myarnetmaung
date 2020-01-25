@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -66,6 +67,7 @@ public class FragmentChat extends HomeBaseFragment {
     private ImageView imageBtn,sendBtn;
     private EditText edtMessage;
     private SwipeRefreshLayout refreshChat;
+    RelativeLayout noLover;
     private int REQUEST_CODE_CHOOSE=1119;
 
     private   Uri selectedUri=null;
@@ -97,6 +99,7 @@ public class FragmentChat extends HomeBaseFragment {
 
         stickerLayout=view.findViewById(R.id.sticker_layout);
         recyclermessages=view.findViewById(R.id.recycler_message);
+        noLover=view.findViewById(R.id.no_lover_found);
 
         refreshChat=view.findViewById(R.id.refresh_chat);
         messageAdapter=new MessageAdapter(chatMessages);
@@ -110,7 +113,10 @@ public class FragmentChat extends HomeBaseFragment {
                 if(dataSnapshot.exists()){
                     if((dataSnapshot.getValue(Lover.class).getRsid()!=null)){
                         loadData();
+                        noLover.setVisibility(View.GONE);
 
+                    }else {
+                        noLover.setVisibility(View.VISIBLE);
                     }
                 }
             }

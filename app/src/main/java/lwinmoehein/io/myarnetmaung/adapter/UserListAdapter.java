@@ -124,12 +124,29 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.Relati
             if(lover.getUid().equals(CurrentUser.currentUser.getUid())){
                 btnConnect.setVisibility(View.GONE);
             }
+            References.loverDatabaseRef.child(CurrentUser.currentUser.getUid()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.exists()){
+                        if(dataSnapshot.getValue(Lover.class).getRsid()==null){
+                            btnConnect.setVisibility(View.VISIBLE);
+                        }else {
+                            btnConnect.setVisibility(View.GONE);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
 
             this.txtLoverName.setText(lover.getName());
             if(lover.getRsid()==null){
                 this.txtLoverStatus.setText("Single");
             }else {
-                References.rsDatabaseRef.child(lover.getRsid()).child(lover.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                References.rsDatabaseRef.child(lover.getRsid()).child(lover.getUid()).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if(dataSnapshot.exists()) {

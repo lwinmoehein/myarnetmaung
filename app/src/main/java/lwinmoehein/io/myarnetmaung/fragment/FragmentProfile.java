@@ -49,7 +49,7 @@ import lwinmoehein.io.myarnetmaung.acitivity.GoogleSignInActivity;
 import lwinmoehein.io.myarnetmaung.dialog.RelationShipDialog;
 import lwinmoehein.io.myarnetmaung.model.Lover;
 
-public class FragmentProfile extends Fragment implements DatePickerDialog.OnDateSetListener {
+public class FragmentProfile extends Fragment {
     ImageView imgUserProfile,partnerProfile;
     TextView txtUserName,txtUserStatus,txtPartnerStatus,txtPartnerName;
 
@@ -147,20 +147,6 @@ public class FragmentProfile extends Fragment implements DatePickerDialog.OnDate
             }
         });
 
-        editDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Calendar now = Calendar.getInstance();
-                DatePickerDialog dpd = DatePickerDialog.newInstance(
-                        FragmentProfile.this,
-                        now.get(Calendar.YEAR), // Initial year selection
-                        now.get(Calendar.MONTH), // Initial month selection
-                        now.get(Calendar.DAY_OF_MONTH) // Inital day selection
-                );
-// If you're calling this from a support Fragment
-                dpd.show(getFragmentManager(), "Datepickerdialog");
-            }
-        });
 
 
 
@@ -218,12 +204,7 @@ public class FragmentProfile extends Fragment implements DatePickerDialog.OnDate
         viewPager.setAdapter(adapter);
     }
 
-    @Override
-    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-        String date = dayOfMonth+"/"+(monthOfYear+1)+"/"+year;
-        Toast.makeText(getActivity(),date,Toast.LENGTH_LONG).show();
 
-    }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();

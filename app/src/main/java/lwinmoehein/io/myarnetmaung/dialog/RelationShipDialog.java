@@ -89,7 +89,7 @@ public class RelationShipDialog extends DialogFragment {
                                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                     if (dataSnapshot.exists()) {
                                                         Snacky.builder().setView(parentView)
-                                                                .setText("This acc already sent you a request,please click confirm!!")
+                                                                .setText("You already has one request!!")
                                                                 .setDuration(Snacky.LENGTH_LONG)
                                                                 .build().setBackgroundTint(Color.RED)
                                                                 .show();

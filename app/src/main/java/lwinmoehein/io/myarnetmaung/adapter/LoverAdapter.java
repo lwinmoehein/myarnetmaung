@@ -114,6 +114,9 @@ public class LoverAdapter extends RecyclerView.Adapter<LoverAdapter.LoverViewHol
                             References.loverDatabaseRef.child(CurrentUser.currentUser.getUid()).child("rsid").setValue(rsid);
                             References.loverDatabaseRef.child(lover.getUid()).child("rsid").setValue(rsid);
 
+                            References.currentLovers.child(CurrentUser.currentUser.getUid()).child("rsid").setValue(rsid);
+                            References.currentLovers.child(lover.getUid()).child("rsid").setValue(rsid);
+
                             References.sentLovers.child(lover.getUid()).child(CurrentUser.currentUser.getUid()).setValue(null);
 
 

@@ -5,5 +5,7 @@
     <color name="colorPrimaryDark">#c77c02</color>
     <color name="colorPrimaryText">#000000</color>
     <color name="colorSecondaryText">#fff</color>
+    <color name="grey_500">#9E9E9E</color>
+
 
 </resources>

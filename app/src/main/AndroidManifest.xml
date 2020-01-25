@@ -14,8 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/MainAppTheme">
-        <activity android:name=".acitivity.LoginActivity"
-            android:theme="@style/LoginTheme">
+        <activity android:name=".acitivity.GoogleSignInActivity"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

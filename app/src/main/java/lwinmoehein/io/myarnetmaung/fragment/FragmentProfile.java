@@ -12,45 +12,37 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.LinearLayoutCompat;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.ui.idp.SingleSignInActivity;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.File;
-import java.security.acl.LastOwnerException;
 import java.util.ArrayList;
 import java.util.List;
 
 import de.mateware.snacky.Snacky;
-import lwinmoehein.io.myarnetmaung.MainActivity;
 import lwinmoehein.io.myarnetmaung.R;
 import lwinmoehein.io.myarnetmaung.Singleton.CurrentUser;
 import lwinmoehein.io.myarnetmaung.Singleton.References;
-import lwinmoehein.io.myarnetmaung.acitivity.LoginActivity;
-import lwinmoehein.io.myarnetmaung.adapter.LoverAdapter;
+import lwinmoehein.io.myarnetmaung.acitivity.GoogleSignInActivity;
 import lwinmoehein.io.myarnetmaung.dialog.RelationShipDialog;
 import lwinmoehein.io.myarnetmaung.model.Lover;
 
@@ -67,6 +59,8 @@ public class FragmentProfile extends Fragment {
 
     String rsId;
     String loverid;
+    private AuthUI mAuth;
+    private GoogleSignInClient mGoogleSignInClient;
 
     public FragmentProfile(){
 
@@ -127,17 +121,13 @@ public class FragmentProfile extends Fragment {
         logoutUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AuthUI.getInstance().signOut(getActivity());
                 FirebaseAuth.getInstance().signOut();
-                Snacky.builder().setView(imgUserProfile.getRootView())
-                        .setText("Logged out")
-                        .setDuration(Snacky.LENGTH_LONG)
-                        .build().setBackgroundTint(Color.GREEN)
-                        .show();
-
-                Intent intent=new Intent( getActivity(), LoginActivity.class);
+                Intent intent=new Intent( getActivity(), GoogleSignInActivity.class);
                 getContext(). startActivity(intent);
                 getActivity().finish();
+
+
+
             }
         });
 

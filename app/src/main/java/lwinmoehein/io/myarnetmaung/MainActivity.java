@@ -40,6 +40,7 @@ import de.mateware.snacky.Snacky;
 import lwinmoehein.io.myarnetmaung.dialog.RelationShipDialog;
 import lwinmoehein.io.myarnetmaung.fragment.FragmentHome;
 import lwinmoehein.io.myarnetmaung.fragment.FragmentProfile;
+import lwinmoehein.io.myarnetmaung.fragment.FragmentUsers;
 
 import static lwinmoehein.io.myarnetmaung.Singleton.Codes.RC_SIGN_IN;
 
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new FragmentHome(), "Home");
         adapter.addFragment(new FragmentHome(), "Chat");
-        adapter.addFragment(new FragmentHome(), "Game");
+        adapter.addFragment(new FragmentUsers(), "users");
         adapter.addFragment(new FragmentProfile(),"Profile");
         viewPager.setAdapter(adapter);
     }

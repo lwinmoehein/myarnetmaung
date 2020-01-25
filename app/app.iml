@@ -117,7 +117,7 @@
     <orderEntry type="library" name="Gradle: com.squareup.okio:okio:1.14.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: org.ocpsoft.prettytime:prettytime:4.0.1.Final@jar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.multidex:multidex:2.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: gun0912.ted:tedbottompicker:2.0.0-alpha1@aar" level="project" />
+    <orderEntry type="library" name="Gradle: gun0912.ted:tedbottompicker:2.0.1@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.material:material:1.2.0-alpha03@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.github.javiersantos:MaterialStyledDialogs:2.1@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.afollestad.material-dialogs:core:3.1.1@aar" level="project" />

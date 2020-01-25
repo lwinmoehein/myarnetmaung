@@ -38,6 +38,7 @@ import java.util.List;
 
 import de.mateware.snacky.Snacky;
 import lwinmoehein.io.myarnetmaung.dialog.RelationShipDialog;
+import lwinmoehein.io.myarnetmaung.fragment.FragmentChat;
 import lwinmoehein.io.myarnetmaung.fragment.FragmentHome;
 import lwinmoehein.io.myarnetmaung.fragment.FragmentProfile;
 import lwinmoehein.io.myarnetmaung.fragment.FragmentUsers;
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new FragmentHome(), "Home");
-        adapter.addFragment(new FragmentHome(), "Chat");
+        adapter.addFragment(new FragmentChat(), "Chat");
         adapter.addFragment(new FragmentUsers(), "users");
         adapter.addFragment(new FragmentProfile(),"Profile");
         viewPager.setAdapter(adapter);

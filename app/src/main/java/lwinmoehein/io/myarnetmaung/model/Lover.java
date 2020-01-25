@@ -1,5 +1,10 @@
 package lwinmoehein.io.myarnetmaung.model;
 
+import com.google.firebase.database.Exclude;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class Lover
 {
     String uid;
@@ -66,5 +71,20 @@ public class Lover
     public void setRsid(String rsid) {
         this.rsid = rsid;
     }
+
+
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("uid", uid);
+        result.put("name", name);
+        result.put("profilepic", profilepic);
+        result.put("gender", gender);
+        result.put("loverid", loverid);
+        result.put("rsid", rsid);
+
+        return result;
+    }
+
 
 }

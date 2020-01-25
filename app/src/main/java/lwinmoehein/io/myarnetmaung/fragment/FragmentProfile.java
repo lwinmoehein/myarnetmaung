@@ -141,6 +141,8 @@ public class FragmentProfile extends Fragment {
             }
         });
 
+        getUserData();
+
         btnEndRelationship.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -151,6 +153,13 @@ public class FragmentProfile extends Fragment {
             }
         });
 
+
+
+
+
+    }
+
+    private void getUserData() {
         References.loverDatabaseRef.child(CurrentUser.currentUser.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -191,9 +200,6 @@ public class FragmentProfile extends Fragment {
 
             }
         });
-
-
-
     }
 
     private void setupViewPager(ViewPager viewPager) {

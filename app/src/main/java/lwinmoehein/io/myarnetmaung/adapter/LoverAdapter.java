@@ -19,6 +19,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.sql.Ref;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import lwinmoehein.io.myarnetmaung.R;
 import lwinmoehein.io.myarnetmaung.Singleton.CurrentUser;
@@ -101,10 +102,11 @@ public class LoverAdapter extends RecyclerView.Adapter<LoverAdapter.LoverViewHol
                     String rsid= References.rsDatabaseRef.push().getKey();
                    References.pendingloverDb.child(CurrentUser.currentUser.getUid()).setValue(null);
 
-                    References.loverDatabaseRef.child(CurrentUser.currentUser.getUid()).addValueEventListener(new ValueEventListener() {
+                    References.loverDatabaseRef.child(CurrentUser.currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             Lover lover1=dataSnapshot.getValue(Lover.class);
+
                             References.rsDatabaseRef.child(rsid).child(lover.getUid()).setValue(lover1);
                             References.rsDatabaseRef.child(rsid).child(CurrentUser.currentUser.getUid()).setValue(lover);
                             References.rsDatabaseRef.child(rsid).child(CurrentUser.currentUser.getUid()).child("rsid").setValue(rsid);

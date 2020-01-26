@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -34,6 +35,7 @@ import lwinmoehein.io.myarnetmaung.MainActivity;
 import lwinmoehein.io.myarnetmaung.R;
 import lwinmoehein.io.myarnetmaung.Singleton.CurrentUser;
 import lwinmoehein.io.myarnetmaung.Singleton.References;
+import lwinmoehein.io.myarnetmaung.acitivity.PrivacyActivity;
 import lwinmoehein.io.myarnetmaung.model.AnniDate;
 import lwinmoehein.io.myarnetmaung.model.Lover;
 
@@ -64,6 +66,8 @@ public class FragmentHome extends Fragment implements View.OnClickListener, Date
 
     LinearLayout noanni;
 
+    CardView btnReminder,btnPrivacy;
+
 
 
 
@@ -92,7 +96,8 @@ public class FragmentHome extends Fragment implements View.OnClickListener, Date
         noanni=view.findViewById(R.id.no_anni);
 
 
-
+        btnReminder=view.findViewById(R.id.cardview_reminders);
+        btnPrivacy=view.findViewById(R.id.cardview_privacy);
 
         //end initialize
         setupCurrentDate(); // setup today's date
@@ -139,6 +144,30 @@ public class FragmentHome extends Fragment implements View.OnClickListener, Date
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
+            }
+        });
+
+        //card listeners
+        btnPrivacy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!(rsid.equals(""))){
+                Intent intent=new Intent(getActivity(), PrivacyActivity.class);
+                intent.putExtra("rsid",rsid);
+                startActivity(intent);}else {
+                    Toast.makeText(getActivity(),"Please wait",Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        btnReminder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!(rsid.equals(""))){
+                    Intent intent=new Intent(getActivity(), PrivacyActivity.class);
+                    intent.putExtra("rsid",rsid);
+                    startActivity(intent);}else {
+                    Toast.makeText(getActivity(),"Please wait",Toast.LENGTH_LONG).show();
+                }
             }
         });
 

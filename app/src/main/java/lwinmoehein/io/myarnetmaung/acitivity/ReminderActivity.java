@@ -1,8 +1,10 @@
-package lwinmoehein.io.myarnetmaung;
+package lwinmoehein.io.myarnetmaung.acitivity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import lwinmoehein.io.myarnetmaung.R;
 
 public class ReminderActivity extends AppCompatActivity {
 

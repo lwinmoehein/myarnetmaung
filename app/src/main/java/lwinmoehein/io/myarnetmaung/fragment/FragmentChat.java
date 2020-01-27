@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -30,15 +31,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.sql.Ref;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import gun0912.tedbottompicker.TedBottomPicker;
 import gun0912.tedbottompicker.TedBottomSheetDialogFragment;
+import lwinmoehein.io.myarnetmaung.MainActivity;
 import lwinmoehein.io.myarnetmaung.R;
 import lwinmoehein.io.myarnetmaung.Singleton.CurrentUser;
 import lwinmoehein.io.myarnetmaung.Singleton.References;
@@ -47,6 +51,8 @@ import lwinmoehein.io.myarnetmaung.model.ChatMessage;
 import lwinmoehein.io.myarnetmaung.model.Lover;
 import lwinmoehein.io.myarnetmaung.model.MessageType;
 import lwinmoehein.io.myarnetmaung.utils.PermissionHelper;
+
+import static android.view.View.GONE;
 
 public class FragmentChat extends HomeBaseFragment {
 
@@ -74,6 +80,8 @@ public class FragmentChat extends HomeBaseFragment {
     private int itempos=0;
     private String lastitem="";
     private boolean moreItem=true;
+
+    private DonutProgress donutProgress;
 
 
 
@@ -109,14 +117,17 @@ public class FragmentChat extends HomeBaseFragment {
         recyclermessages.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclermessages.setAdapter(messageAdapter);
 
+        donutProgress=view.findViewById(R.id.donut_progress);
+
         References.loverDatabaseRef.child(CurrentUser.currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
                     if((dataSnapshot.getValue(Lover.class).getRsid()!=null)){
-                        chatReference=chatReference.child(dataSnapshot.getValue(Lover.class).getRsid());
+                        chatReference=null;
+                        chatReference= References.chatDatabaseRef.child(dataSnapshot.getValue(Lover.class).getRsid());
                         getData();
-                        noRefreshchat.setVisibility(View.GONE);
+                        noRefreshchat.setVisibility(GONE);
 
                         noRefreshchat.setEnabled(false);
 
@@ -143,9 +154,10 @@ public class FragmentChat extends HomeBaseFragment {
                         if(dataSnapshot.exists()){
                             noRefreshchat.setRefreshing(false);
                             if((dataSnapshot.getValue(Lover.class).getRsid()!=null)){
+                                chatReference=null;
                                 chatReference=chatReference.child(dataSnapshot.getValue(Lover.class).getRsid());
                                 //getData();
-                                noRefreshchat.setVisibility(View.GONE);
+                                noRefreshchat.setVisibility(GONE);
                                 noRefreshchat.setEnabled(false);
 
                             }else {
@@ -225,9 +237,31 @@ public class FragmentChat extends HomeBaseFragment {
                     public void onSuccess(Uri uri) {
                         String id=chatReference.push().getKey();
                         ChatMessage chatMessage=new ChatMessage(id,false,ServerValue.TIMESTAMP, MessageType.IMAGE_MESSAGE, CurrentUser.currentUser.getUid(),"",uri.toString(),CurrentUser.currentUser.getDisplayName(), CurrentUser.currentUser.getPhotoUrl().toString());
-                        chatReference.child(id).setValue(chatMessage);                     }
+                        chatReference.child(id).setValue(chatMessage).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                donutProgress.setVisibility(GONE);
+
+                            }
+                        });
+                    }
                 });
             }
+        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                donutProgress.setVisibility(View.VISIBLE);
+                double bytesTransferred = (double) taskSnapshot.getBytesTransferred();
+                Double.isNaN(bytesTransferred);
+                bytesTransferred *= 100.0d;
+                double totalByteCount = (double) taskSnapshot.getTotalByteCount();
+                Double.isNaN(totalByteCount);
+                bytesTransferred /= totalByteCount;
+
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append((int) bytesTransferred);
+                donutProgress.setDonut_progress(stringBuilder.toString());
+              }
         });
     }
 

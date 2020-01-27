@@ -126,8 +126,8 @@ public class FragmentProfile extends Fragment {
             @Override
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
-                Intent intent=new Intent( getActivity(), GoogleSignInActivity.class);
-                getContext(). startActivity(intent);
+                Intent intent = new Intent(getActivity(), GoogleSignInActivity.class);
+                startActivity(intent);
                 getActivity().finish();
 
 

@@ -25,6 +25,11 @@ public class References {
 
     public static DatabaseReference anniDate=FirebaseDatabase.getInstance().getReference("anniversaries");
 
+    public static DatabaseReference privacyPhotoRef= FirebaseDatabase.getInstance().getReference("privacy").child("photos");
+    public static StorageReference  privacyPhotoStorage= FirebaseStorage.getInstance().getReference("privacy").child("photos");
+
+
+
 
 
 

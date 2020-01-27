@@ -4,11 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -31,8 +28,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 import es.dmoral.toasty.Toasty;
-import lwinmoehein.io.myarnetmaung.MainActivity;
 import lwinmoehein.io.myarnetmaung.R;
+import lwinmoehein.io.myarnetmaung.acitivity.ReminderActivity;
 import lwinmoehein.io.myarnetmaung.Singleton.CurrentUser;
 import lwinmoehein.io.myarnetmaung.Singleton.References;
 import lwinmoehein.io.myarnetmaung.acitivity.PrivacyActivity;
@@ -113,6 +110,7 @@ public class FragmentHome extends Fragment implements View.OnClickListener, Date
                 if(dataSnapshot.exists()){
                     Lover lover=dataSnapshot.getValue(Lover.class);
                     if(lover.getRsid()!=null){
+                        noanni.setVisibility(View.GONE);
                         rsid=lover.getRsid();
                         if(!(rsid.equals(""))) {
                             References.anniDate.child(rsid).addValueEventListener(new ValueEventListener() {
@@ -126,8 +124,6 @@ public class FragmentHome extends Fragment implements View.OnClickListener, Date
                                         calculateAge();
                                         nextBirthday();
                                         noanni.setVisibility(View.GONE);
-                                    }else {
-                                        noanni.setVisibility(View.VISIBLE);
                                     }
                                 }
 
@@ -137,6 +133,8 @@ public class FragmentHome extends Fragment implements View.OnClickListener, Date
                                 }
                             });
                         }
+                    }else {
+                        noanni.setVisibility(View.VISIBLE);
                     }
                 }
             }
@@ -163,7 +161,7 @@ public class FragmentHome extends Fragment implements View.OnClickListener, Date
             @Override
             public void onClick(View v) {
                 if(!(rsid.equals(""))){
-                    Intent intent=new Intent(getActivity(), PrivacyActivity.class);
+                    Intent intent=new Intent(getActivity(), ReminderActivity.class);
                     intent.putExtra("rsid",rsid);
                     startActivity(intent);}else {
                     Toast.makeText(getActivity(),"Please wait",Toast.LENGTH_LONG).show();

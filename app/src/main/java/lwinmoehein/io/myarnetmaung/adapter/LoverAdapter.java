@@ -1,5 +1,6 @@
 package lwinmoehein.io.myarnetmaung.adapter;
 
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,8 @@ import lwinmoehein.io.myarnetmaung.model.Lover;
 public class LoverAdapter extends RecyclerView.Adapter<LoverAdapter.LoverViewHolder>{
 
     private List<Lover> loverArrayList=new ArrayList<>();
-    ;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
 
     public LoverAdapter(List<Lover> postArrayList) {
         this.loverArrayList = postArrayList;
